@@ -17,4 +17,8 @@ public class SavingsAccount {
     @OneToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+
+    private double balance;
+    private double minimumBalance;
+
 }
