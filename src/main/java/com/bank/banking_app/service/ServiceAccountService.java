@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServiceAccountService {
 
-    @Autowired
+   /* @Autowired
     SavingsAccountRepository savingsAccountRepository;
 
     public SavingsAccount createSavingAccount(SavingsAccount account){
@@ -23,5 +23,5 @@ public class ServiceAccountService {
         }else{
             throw  new RuntimeException("Insufficient Balance");
         }
-    }
+    }*/
 }

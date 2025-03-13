@@ -1,9 +1,10 @@
 package com.bank.banking_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -18,11 +19,18 @@ public class Customer {
     private String name;
     private String email;
     private String phone;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate dateOfBirth;
+    private String aadhaar;
+    private boolean isMinor;
 
+
+
+    /*
     @OneToOne(mappedBy = "customer",cascade = CascadeType.ALL)
     private SavingsAccount savingsAccount;
 
     @OneToOne(mappedBy = "customer",cascade = CascadeType.ALL)
-    private LoanAccount loanAccount;
+    private LoanAccount loanAccount;*/
 
 }
