@@ -2,6 +2,8 @@ package com.bank.banking_app.service;
 
 import com.bank.banking_app.entity.Customer;
 import com.bank.banking_app.exceptions.CustomerAlreadyExists;
+import com.bank.banking_app.exceptions.NotFoundException;
+import com.bank.banking_app.repository.AddressRepository;
 import com.bank.banking_app.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,21 +19,31 @@ public class CustomerService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public Customer addCustomer(Customer customer){
+    @Autowired
+    private AddressRepository addressRepository;
 
-        Customer customerAlreadyExists= customerRepository.findByAadhaar(customer.getAadhaar());
-        if(customerAlreadyExists!=null)
-            throw new CustomerAlreadyExists("customer already exists in the bank, please check your details");
-        else
-          return customerRepository.save(customer);
+    public Customer addCustomer(Customer customer) throws CustomerAlreadyExists {
+
+         customerRepository
+                .findByAadhaar(customer.getAadhaar()).orElseThrow(()->
+        new CustomerAlreadyExists("customer already exists in the bank, please check your details"));
+
+             customer.getAddress().stream().forEach(address->address.setCustomer(customer));
+            return customerRepository.save(customer);
+
     }
 
-    public Customer getCustomer(Long id){
-        return customerRepository.findById(id).get();
+    public Customer getCustomer(Long id) throws NotFoundException {
+        return customerRepository.findById(id)
+                .orElseThrow(()-> new NotFoundException("No fount customer details"));
     }
 
     public List<Customer> getAllCustomers(){
         return customerRepository.findAll();
+    }
+    public Customer updateCustomer(Long customerId, Customer updatedCustomer) {
+        updatedCustomer.setId(customerId);
+        return customerRepository.save(updatedCustomer);
     }
 
 }

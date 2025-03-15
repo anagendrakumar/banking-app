@@ -12,24 +12,30 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(NotFoundException.class)
+    @ExceptionHandler(value = NotFoundException.class)
     public ResponseEntity<ErrorResponse> NotFoundExceptionHandler(NotFoundException exception){
         ErrorResponse errorResponse= new ErrorResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND.toString()
                 ,HttpStatus.NOT_FOUND.value(), exception.getMessage());
         return ResponseEntity.ok().body(errorResponse);
     }
 
-    @ExceptionHandler(HttpServerErrorException.InternalServerError.class)
+    @ExceptionHandler(value = HttpServerErrorException.InternalServerError.class)
     public ResponseEntity<ErrorResponse> InternalServerExceptionHandler(HttpServerErrorException.InternalServerError exception){
         ErrorResponse errorResponse= new ErrorResponse(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR.toString()
                 ,HttpStatus.INTERNAL_SERVER_ERROR.value(), "Check properly and enter values or check in Application");
         return ResponseEntity.ok().body(errorResponse);
     }
 
+    @ExceptionHandler(value = CustomerAlreadyExists.class)
     public  ResponseEntity<ErrorResponse> CustomerAlreadyExistsExceptionHandler(CustomerAlreadyExists alreadyExists){
-        String status= String.valueOf(HttpStatus.valueOf("ALREADY_EXISTS"));
-        int statusCode=403;
-        ErrorResponse errorResponse= new ErrorResponse(LocalDateTime.now(),status,statusCode,"Customer Already Exists");
+        String status= "ALREADY_EXISTS";
+        ErrorResponse errorResponse= new ErrorResponse(LocalDateTime.now(),status,HttpStatus.ALREADY_REPORTED.value(),"Customer Already Exists");
      return ResponseEntity.ok().body(errorResponse);
+    }
+
+    @ExceptionHandler(value = InsufficientBalance.class)
+    public ResponseEntity<String> InsufficientBalanceExceptionHandler(InsufficientBalance insufficientBalance){
+        String message=insufficientBalance.getMessage();
+        return ResponseEntity.ok(message);
     }
 }

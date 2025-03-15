@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,7 +25,14 @@ public class Customer {
     private String aadhaar;
     private boolean isMinor;
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<Address> address;
 
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private SavingsAccount savingsAccount;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<LoanAccount> loanAccounts;
 
     /*
     @OneToOne(mappedBy = "customer",cascade = CascadeType.ALL)

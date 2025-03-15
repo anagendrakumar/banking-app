@@ -1,10 +1,17 @@
 package com.bank.banking_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
+/*
+ * Default minimum balance will be 100
+ */
 @Entity
 @Data
 @NoArgsConstructor
@@ -12,13 +19,23 @@ import lombok.NoArgsConstructor;
 public class SavingsAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @JsonProperty
+    private Long accountId;
+
+    @JsonProperty
+    private double balance;
+    @JsonProperty
+    private double minimumBalance = 100.0;
 
     @OneToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnore
     private Customer customer;
 
-    private double balance;
-    private double minimumBalance;
+    @OneToMany(mappedBy = "savingsAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Transactions> transactions;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 }

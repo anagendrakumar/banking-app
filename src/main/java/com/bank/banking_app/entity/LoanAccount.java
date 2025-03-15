@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+
 /*
 * Tenure will be in months
 */
@@ -15,13 +18,19 @@ public class LoanAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    private Long loanId;
 
     private double loanAmount;
-    private int tenure;
+    private int tenure; // In months
     private double interestRate;
+    private double emiAmount;
+    private double outstandingBalance;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+
+    @OneToMany(mappedBy = "loanAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Transactions> transactions;
+
 }
