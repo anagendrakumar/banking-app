@@ -28,9 +28,9 @@ public class LoanAccountService {
         return loanAccountRepository.save(loanAccount);
     }
 
-    public LoanAccount makeAdhocPayment(Long loanId, double amount) {
+    public LoanAccount makeAdhocPayment(Long loanId, double amount) throws NotFoundException {
         LoanAccount loanAccount = loanAccountRepository.findById(loanId)
-                .orElseThrow(() -> new RuntimeException("Loan account not found"));
+                .orElseThrow(() -> new NotFoundException("Loan account not found"));
         loanAccount.setOutstandingBalance(loanAccount.getOutstandingBalance() - amount);
         return loanAccountRepository.save(loanAccount);
     }

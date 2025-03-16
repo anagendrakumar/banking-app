@@ -25,7 +25,7 @@ public class SavingsAccountController {
       return ResponseEntity.ok().body(savingsAccountService.getAccountById(accountId));
   }
     @PostMapping("/deposit/{accountId}/{amount}")
-    public ResponseEntity<SavingsAccount> deposit(@PathVariable Long accountId,@PathVariable double amount){
+    public ResponseEntity<SavingsAccount> deposit(@PathVariable Long accountId,@PathVariable double amount) throws NotFoundException {
       return ResponseEntity.ok(savingsAccountService.deposit(accountId,amount));
     }
 

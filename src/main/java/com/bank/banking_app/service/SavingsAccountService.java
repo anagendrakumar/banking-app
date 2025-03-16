@@ -47,9 +47,9 @@ public class SavingsAccountService {
                 .findById(accountId).orElseThrow(()->new NotFoundException("Your account not Exists"));
     }
 
-    public SavingsAccount deposit(Long accountId, double amount) {
+    public SavingsAccount deposit(Long accountId, double amount) throws NotFoundException {
         SavingsAccount account = savingsAccountRepository.findById(accountId)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+                .orElseThrow(() -> new NotFoundException("Account not found"));
         account.setBalance(account.getBalance() + amount);
         return savingsAccountRepository.save(account);
     }
