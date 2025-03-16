@@ -1,5 +1,6 @@
 package com.bank.banking_app.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,9 +23,11 @@ public class Transactions {
 
     @ManyToOne
     @JoinColumn(name = "savings_account_id")
+    @JsonIgnore
     private SavingsAccount savingsAccount;
 
     @ManyToOne
     @JoinColumn(name = "loan_account_id")
+    @JsonIgnore
     private LoanAccount loanAccount;
 }

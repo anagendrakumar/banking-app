@@ -31,7 +31,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getCustomer(customerId));
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update/{customerId}")
     public ResponseEntity<Customer> updateCustomerDetails(@PathVariable Long customerId, @RequestBody Customer updateCustomer){
       return ResponseEntity.ok().body(customerService.updateCustomer(customerId,updateCustomer));
     }

@@ -20,9 +20,9 @@ public class LoanAccountController {
     @Autowired
     private EMICaluculatorService emiCaluculatorService;
 
-    @PostMapping("/newloan")
-    public ResponseEntity<LoanAccount> newLoan(@RequestBody LoanAccount loanAccount) {
-        return ResponseEntity.ok(loanAccountService.openLoanAccount(loanAccount));
+    @PostMapping("/newloan/{customerId}")
+    public ResponseEntity<LoanAccount> newLoan(@PathVariable Long customerId, @RequestBody LoanAccount loanAccount) throws NotFoundException {
+        return ResponseEntity.ok(loanAccountService.openLoanAccount(customerId,loanAccount));
     }
 
     @GetMapping("/getloan/{loanId}")
@@ -40,9 +40,14 @@ public class LoanAccountController {
     public ResponseEntity<LoanAccount> adhocPayment(@PathVariable Long loanId, @PathVariable double amount) throws NotFoundException {
         return ResponseEntity.ok().body(loanAccountService.makeAdhocPayment(loanId, amount));
     }
-
+    //EMI Calculator
     @GetMapping("/calculate/emi/{loanAmount}/{interestRate}/{tenure}")
-    public ResponseEntity<Double> emiCalculator(@PathVariable double loanAmount,@PathVariable double interestRate,@PathVariable int tenure)  {
+    public ResponseEntity<String> emiCalculator(@PathVariable double loanAmount,@PathVariable double interestRate,@PathVariable int tenure)  {
         return  ResponseEntity.ok(emiCaluculatorService.calculateEMI(loanAmount,interestRate,tenure));
+    }
+
+    @DeleteMapping("/delete/{loanId}")
+    public ResponseEntity<String> deleteLoan(@PathVariable Long loanId){
+        return ResponseEntity.ok(loanAccountService.deleteById(loanId));
     }
 }

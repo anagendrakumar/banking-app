@@ -1,10 +1,17 @@
 package com.bank.banking_app.service;
 
+import com.bank.banking_app.entity.Customer;
 import com.bank.banking_app.entity.LoanAccount;
+import com.bank.banking_app.entity.Transactions;
 import com.bank.banking_app.exceptions.NotFoundException;
+import com.bank.banking_app.repository.CustomerRepository;
 import com.bank.banking_app.repository.LoanAccountRepository;
+import com.bank.banking_app.repository.TransactionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class LoanAccountService {
@@ -12,7 +19,20 @@ public class LoanAccountService {
     @Autowired
     private LoanAccountRepository loanAccountRepository;
 
-    public LoanAccount openLoanAccount(LoanAccount loanAccount) {
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private TransactionsRepository transactionsRepository;
+
+    public LoanAccount openLoanAccount(Long customerId,LoanAccount loanAccount) throws NotFoundException {
+        Customer customer=customerRepository.findById(customerId)
+                .orElseThrow(() ->new NotFoundException("Customer Not Found"));
+        loanAccount.setCustomer(customer);
+        double monthlyInterestRate = loanAccount.getInterestRate() / 12 / 100;
+        double emi = (loanAccount.getLoanAmount() * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanAccount.getTenure())) /
+                (Math.pow(1 + monthlyInterestRate, loanAccount.getTenure()) - 1);
+        loanAccount.setEmiAmount((double) Math.round(emi*100)/100);
         return loanAccountRepository.save(loanAccount);
     }
 
@@ -25,6 +45,12 @@ public class LoanAccountService {
         LoanAccount loanAccount = loanAccountRepository.findById(loanId)
                 .orElseThrow(() -> new RuntimeException("Loan account not found"));
         loanAccount.setOutstandingBalance(loanAccount.getOutstandingBalance() - amount);
+        Transactions transactions=new Transactions();
+        transactions.setAmount(amount);
+        transactions.setTransactionDate(LocalDateTime.now());
+        transactions.setLoanAccount(loanAccount);
+        transactions.setTransactionType("EMI Payment");
+        transactionsRepository.save(transactions);
         return loanAccountRepository.save(loanAccount);
     }
 
@@ -32,6 +58,17 @@ public class LoanAccountService {
         LoanAccount loanAccount = loanAccountRepository.findById(loanId)
                 .orElseThrow(() -> new NotFoundException("Loan account not found"));
         loanAccount.setOutstandingBalance(loanAccount.getOutstandingBalance() - amount);
+        Transactions transactions=new Transactions();
+        transactions.setAmount(amount);
+        transactions.setTransactionDate(LocalDateTime.now());
+        transactions.setLoanAccount(loanAccount);
+        transactions.setTransactionType("ADHOC Payment");
+        transactionsRepository.save(transactions);
         return loanAccountRepository.save(loanAccount);
+    }
+
+    public String deleteById(Long loanId) {
+        loanAccountRepository.deleteById(loanId);
+        return "Loan is cleared";
     }
 }
