@@ -23,10 +23,9 @@ public class CustomerService {
     private AddressRepository addressRepository;
 
     public Customer addCustomer(Customer customer) throws CustomerAlreadyExists {
-
-         customerRepository
-                .findByAadhaar(customer.getAadhaar()).orElseThrow(()->
-        new CustomerAlreadyExists("customer already exists in the bank, please check your details"));
+        Optional<Customer> customerAlreadyExists=customerRepository.findByAadhaar(customer.getAadhaar());
+        if(customerAlreadyExists.isPresent())
+            throw new CustomerAlreadyExists("Please check details and enter");
 
              customer.getAddress().stream().forEach(address->address.setCustomer(customer));
             return customerRepository.save(customer);

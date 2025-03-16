@@ -28,8 +28,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = CustomerAlreadyExists.class)
     public  ResponseEntity<ErrorResponse> CustomerAlreadyExistsExceptionHandler(CustomerAlreadyExists alreadyExists){
-        String status= "ALREADY_EXISTS";
-        ErrorResponse errorResponse= new ErrorResponse(LocalDateTime.now(),status,HttpStatus.ALREADY_REPORTED.value(),"Customer Already Exists");
+
+        ErrorResponse errorResponse= new ErrorResponse(LocalDateTime.now(), alreadyExists.getMessage(), HttpStatus.valueOf(403).value(),"Customer Already Exists");
      return ResponseEntity.ok().body(errorResponse);
     }
 
