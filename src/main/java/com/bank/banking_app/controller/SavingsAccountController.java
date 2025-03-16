@@ -16,6 +16,7 @@ public class SavingsAccountController {
 
     @Autowired
     SavingsAccountService savingsAccountService;
+
   @PostMapping("/save/{customerId}")
   public ResponseEntity<SavingsAccount> newAccount(@PathVariable Long customerId, @RequestBody SavingsAccount savingsAccount){
       return ResponseEntity.ok().body(savingsAccountService.openAccount(customerId,savingsAccount));

@@ -10,8 +10,9 @@ public class EMICaluculatorService {
         double emi = (loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, tenure)) /
                 (Math.pow(1 + monthlyInterestRate, tenure) - 1);
         double finalEmi= (double) Math.round(emi*100)/100;
-        return "Loan Amount:"+loanAmount+" Interest Rate:"+interestRate+
-                " Tenure (in months):"+tenure+ " Your Monthly EMI will be "+finalEmi +
-                " per month";
+        return "Loan Amount:"+loanAmount+ System.lineSeparator()+
+                "Interest Rate:"+interestRate+ System.lineSeparator()+
+                "Tenure (in months):"+tenure+ System.lineSeparator()+
+                "Your Monthly EMI will be "+finalEmi;
     }
 }

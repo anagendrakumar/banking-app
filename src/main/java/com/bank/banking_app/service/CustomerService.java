@@ -35,7 +35,7 @@ public class CustomerService {
 
     public Customer getCustomer(Long id) throws NotFoundException {
         return customerRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("No fount customer details"));
+                .orElseThrow(()-> new NotFoundException("No found customer details"));
     }
 
     public List<Customer> getAllCustomers(){
