@@ -24,6 +24,7 @@ public class CustomerService {
 
     public Customer addCustomer(Customer customer) throws CustomerAlreadyExists {
         Optional<Customer> customerAlreadyExists=customerRepository.findByAadhaar(customer.getAadhaar());
+       //if customer already presents means its throws an error
         if(customerAlreadyExists.isPresent())
             throw new CustomerAlreadyExists("Please check details and enter");
 
@@ -40,9 +41,16 @@ public class CustomerService {
     public List<Customer> getAllCustomers(){
         return customerRepository.findAll();
     }
+
     public Customer updateCustomer(Long customerId, Customer updatedCustomer) {
         updatedCustomer.setId(customerId);
         return customerRepository.save(updatedCustomer);
     }
 
+    public void deleteCustomerById(Long customerId) throws NotFoundException {
+        customerRepository.findById(customerId).orElseThrow(
+                ()-> new NotFoundException("Customer is not found")
+        );
+        customerRepository.deleteById(customerId);
+    }
 }

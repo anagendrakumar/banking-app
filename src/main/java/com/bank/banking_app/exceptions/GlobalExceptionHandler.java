@@ -28,14 +28,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = CustomerAlreadyExists.class)
     public  ResponseEntity<ErrorResponse> CustomerAlreadyExistsExceptionHandler(CustomerAlreadyExists alreadyExists){
-
-        ErrorResponse errorResponse= new ErrorResponse(LocalDateTime.now(), alreadyExists.getMessage(), HttpStatus.valueOf(403).value(),"Customer Already Exists");
+        ErrorResponse errorResponse= new ErrorResponse(LocalDateTime.now(), HttpStatus.valueOf("ALREADY_EXISTS").toString(), HttpStatus.valueOf(403).value(), alreadyExists.getMessage());
      return ResponseEntity.ok().body(errorResponse);
     }
 
     @ExceptionHandler(value = InsufficientBalance.class)
-    public ResponseEntity<String> InsufficientBalanceExceptionHandler(InsufficientBalance insufficientBalance){
-        String message=insufficientBalance.getMessage();
-        return ResponseEntity.ok(message);
+    public ResponseEntity<ErrorResponse> InsufficientBalanceExceptionHandler(InsufficientBalance insufficientBalance){
+        ErrorResponse errorResponse=new ErrorResponse(LocalDateTime.now(),HttpStatus.valueOf("INSUFFICIENT_FUNDS").toString(),HttpStatus.valueOf(406).value(),
+                insufficientBalance.getMessage());
+        return ResponseEntity.ok(errorResponse);
     }
 }

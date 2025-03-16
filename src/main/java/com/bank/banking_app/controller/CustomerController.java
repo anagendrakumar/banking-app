@@ -30,4 +30,15 @@ public class CustomerController {
     public ResponseEntity<Customer> getByCustomerId(@PathVariable Long customerId) throws NotFoundException {
         return ResponseEntity.ok(customerService.getCustomer(customerId));
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<Customer> updateCustomerDetails(@PathVariable Long customerId, @RequestBody Customer updateCustomer){
+      return ResponseEntity.ok().body(customerService.updateCustomer(customerId,updateCustomer));
+    }
+
+    @DeleteMapping("/delete/{customerId}")
+    public ResponseEntity<String> deleteCustomerById(@PathVariable Long customerId) throws NotFoundException {
+        customerService.deleteCustomerById(customerId);
+        return ResponseEntity.ok("Customer Account is Deleted");
+    }
 }
