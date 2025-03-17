@@ -10,6 +10,10 @@ import java.util.List;
 
 /*
 * Tenure will be in months
+* emiAmount will be monthly pay amount
+* loanAmount will be sanctioned amount
+* outstandingBalance will be how much remaining we have to pay
+*
 */
 @Entity
 @Data

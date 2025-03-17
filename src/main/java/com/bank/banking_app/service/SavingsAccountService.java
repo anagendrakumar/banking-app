@@ -27,20 +27,6 @@ public class SavingsAccountService {
     @Autowired
     TransactionsRepository transactionsRepository;
 
-   /*
-    public SavingsAccount createSavingAccount(SavingsAccount account){
-        return savingsAccountRepository.save(account);
-    }
-
-    public void withdraw(Long id, double amount){
-        SavingsAccount account= savingsAccountRepository.findById(id).orElseThrow();
-        if(account.getBalance()-amount>=account.getMinimumBalance()){
-            account.setBalance(account.getBalance()-amount);
-            savingsAccountRepository.save(account);
-        }else{
-            throw  new RuntimeException("Insufficient Balance");
-        }
-    }*/
    public SavingsAccount openAccount(Long customerId, SavingsAccount account) {
        Customer customer=customerRepository.findById(customerId).get();
        account.setCreatedAt(LocalDateTime.now());
@@ -63,6 +49,7 @@ public class SavingsAccountService {
          transactions.setSavingsAccount(account);
          transactions.setTransactionType("Deposit");
          transactionsRepository.save(transactions);
+         account.setUpdatedAt(LocalDateTime.now());
         return savingsAccountRepository.save(account);
     }
 
@@ -79,6 +66,7 @@ public class SavingsAccountService {
         transactions.setSavingsAccount(account);
         transactions.setTransactionType("Withdraw");
         transactionsRepository.save(transactions);
+        account.setUpdatedAt(LocalDateTime.now());
         return savingsAccountRepository.save(account);
     }
 }

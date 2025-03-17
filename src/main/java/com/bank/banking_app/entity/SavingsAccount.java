@@ -25,7 +25,7 @@ public class SavingsAccount {
     @JsonProperty
     private double balance;
     @JsonProperty
-    private double minimumBalance = 100.0;
+    private double minimumBalance = 500.0;
 
     @OneToOne
     @JoinColumn(name = "customer_id", nullable = false)

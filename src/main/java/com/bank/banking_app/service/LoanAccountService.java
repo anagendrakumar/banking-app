@@ -68,7 +68,11 @@ public class LoanAccountService {
     }
 
     public String deleteById(Long loanId) {
-        loanAccountRepository.deleteById(loanId);
+        LoanAccount loanAccount=loanAccountRepository.findById(loanId).get();
+        if(loanAccount.getOutstandingBalance()==0)
+         loanAccountRepository.deleteById(loanId);
+        else
+            return "Please pay remaining pending loan amount: "+loanAccount.getOutstandingBalance()+", then your loan will be cleared. Thanks!!";
         return "Loan is cleared";
     }
 }
