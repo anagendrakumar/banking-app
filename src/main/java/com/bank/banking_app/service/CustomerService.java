@@ -59,7 +59,26 @@ public class CustomerService {
         return customerRepository.findAll();
     }
 
-    public Customer updateCustomer(Long customerId, Customer updatedCustomer) {
+    public Customer updateCustomer(Long customerId, Customer updatedCustomer)
+    {
+        Customer customer=customerRepository.findById(customerId).get();
+
+        if(updatedCustomer.getEmail()==null)
+            updatedCustomer.setEmail(customer.getEmail());
+        if(updatedCustomer.getPhone()==null)
+            updatedCustomer.setPhone(customer.getPhone());
+        if(updatedCustomer.getName()==null)
+            updatedCustomer.setName(customer.getName());
+        if(updatedCustomer.getDateOfBirth()==null)
+            updatedCustomer.setDateOfBirth(customer.getDateOfBirth());
+        if(updatedCustomer.getAadhaar()==null)
+            updatedCustomer.setAadhaar(customer.getAadhaar());
+        if(updatedCustomer.getAddress()==null)
+            updatedCustomer.setAddress(customer.getAddress());
+        if(updatedCustomer.getLoanAccounts()==null)
+            updatedCustomer.setLoanAccounts(customer.getLoanAccounts());
+        if(updatedCustomer.getSavingsAccount()==null)
+            updatedCustomer.setSavingsAccount(customer.getSavingsAccount());
         updatedCustomer.setId(customerId);
         return customerRepository.save(updatedCustomer);
     }

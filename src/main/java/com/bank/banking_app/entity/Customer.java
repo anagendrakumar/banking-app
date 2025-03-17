@@ -34,11 +34,5 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<LoanAccount> loanAccounts;
 
-    /*
-    @OneToOne(mappedBy = "customer",cascade = CascadeType.ALL)
-    private SavingsAccount savingsAccount;
-
-    @OneToOne(mappedBy = "customer",cascade = CascadeType.ALL)
-    private LoanAccount loanAccount;*/
 
 }
