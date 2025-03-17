@@ -1,6 +1,7 @@
 package com.bank.banking_app.exceptions;
 
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,4 +39,13 @@ public class GlobalExceptionHandler {
                 insufficientBalance.getMessage());
         return ResponseEntity.ok(errorResponse);
     }
+
+    @ExceptionHandler(value = BadRequestException.class)
+    public  ResponseEntity<ErrorResponse> BadRequestExceptionHandler(BadRequestException ex){
+        ErrorResponse errorResponse= new ErrorResponse(LocalDateTime.now(), HttpStatus.BAD_REQUEST.toString(), HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+        return ResponseEntity.ok().body(errorResponse);
+    }
+
+
+
 }
