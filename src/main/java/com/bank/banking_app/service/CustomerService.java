@@ -5,6 +5,7 @@ import com.bank.banking_app.exceptions.CustomerAlreadyExists;
 import com.bank.banking_app.exceptions.NotFoundException;
 import com.bank.banking_app.repository.AddressRepository;
 import com.bank.banking_app.repository.CustomerRepository;
+import com.bank.banking_app.validations.Validations;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class CustomerService {
     @Autowired
     private AddressRepository addressRepository;
 
+    @Autowired
+    Validations validations;
+
     public Customer addCustomer(Customer customer) throws CustomerAlreadyExists {
         Optional<Customer> customerAlreadyExists=customerRepository.findByAadhaar(customer.getAadhaar());
        //if customer already presents means its throws an error
@@ -30,9 +34,16 @@ public class CustomerService {
             throw new CustomerAlreadyExists("Customer already exists on Aadhaar "+customer.getAadhaar()+
                     ", please check and enter correctly");
 
-        boolean isAadhaarCheck= isAadhaarValidation(customer.getAadhaar());
+        boolean isEmailCheck=Validations.isEmailValidation(customer.getEmail());
+         if(!isEmailCheck)
+             throw new RuntimeException("Please enter correct Email");
+
+        boolean isAadhaarCheck= Validations.isAadhaarValidation(customer.getAadhaar());
           if(!isAadhaarCheck)
               throw new RuntimeException("Please enter correct Aadhaar details");
+          boolean isPhoneCheck=Validations.isMobileValidation(customer.getPhone());
+          if(!isPhoneCheck)
+              throw new RuntimeException("Please enter correct phone number");
 
         customer.getAddress().stream().forEach(address->address.setCustomer(customer));
             return customerRepository.save(customer);
@@ -60,14 +71,5 @@ public class CustomerService {
         customerRepository.deleteById(customerId);
     }
 
-    //Validations
 
-    private boolean isAadhaarValidation(String aadhaar) {
-        String regex= "^[2-9]{1}[0-9]{3}\\s[0-9]{4}\\s[0-9]{4}$";
-        Pattern p= Pattern.compile(regex);
-        if(aadhaar==null)
-            return false;
-        Matcher m=p.matcher(aadhaar);
-        return m.matches();
-    }
 }
