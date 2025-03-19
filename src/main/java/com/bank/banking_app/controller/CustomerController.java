@@ -1,5 +1,6 @@
 package com.bank.banking_app.controller;
 
+import com.bank.banking_app.entity.Address;
 import com.bank.banking_app.entity.Customer;
 import com.bank.banking_app.exceptions.CustomerAlreadyExists;
 import com.bank.banking_app.exceptions.NotFoundException;
@@ -40,5 +41,11 @@ public class CustomerController {
     public ResponseEntity<String> deleteCustomerById(@PathVariable Long customerId) throws NotFoundException {
         customerService.deleteCustomerById(customerId);
         return ResponseEntity.ok("Customer Account is Deleted");
+    }
+
+    @GetMapping("/{customerId}/address")
+    public ResponseEntity<List<Address>> getCustomerDetails(@PathVariable Long customerId) throws NotFoundException {
+
+        return ResponseEntity.ok(customerService.getCustomerAddress(customerId));
     }
 }

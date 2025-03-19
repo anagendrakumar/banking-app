@@ -48,6 +48,7 @@ public class SavingsAccountService {
          transactions.setTransactionDate(LocalDateTime.now());
          transactions.setSavingsAccount(account);
          transactions.setTransactionType("Deposit");
+         transactions.setTransactionStatus("SUCCESS");
          transactionsRepository.save(transactions);
          account.setUpdatedAt(LocalDateTime.now());
         return savingsAccountRepository.save(account);
@@ -65,6 +66,7 @@ public class SavingsAccountService {
         transactions.setTransactionDate(LocalDateTime.now());
         transactions.setSavingsAccount(account);
         transactions.setTransactionType("Withdraw");
+        transactions.setTransactionStatus("SUCCESS");
         transactionsRepository.save(transactions);
         account.setUpdatedAt(LocalDateTime.now());
         return savingsAccountRepository.save(account);

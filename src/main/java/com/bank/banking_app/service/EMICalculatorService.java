@@ -3,7 +3,7 @@ package com.bank.banking_app.service;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EMICaluculatorService {
+public class EMICalculatorService {
 
     public String calculateEMI(double loanAmount, double interestRate, int tenure)  {
         double monthlyInterestRate = interestRate / 12 / 100;

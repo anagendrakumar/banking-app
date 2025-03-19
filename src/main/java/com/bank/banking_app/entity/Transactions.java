@@ -14,12 +14,15 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Transactions {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_seq")
+    @SequenceGenerator(name = "payment_seq", sequenceName = "payment_sequence", allocationSize = 1)
     private Long transactionId;
 
-    private String transactionType; // Deposit, Withdrawal, EMI Payment, Adhoc Payment
-    private double amount;
     private LocalDateTime transactionDate;
+    private String transactionType; // Deposit, Withdrawal, EMI Payment, Adhoc Payment
+    private String transactionStatus;
+    private double amount;
+
 
     @ManyToOne
     @JoinColumn(name = "savings_account_id")

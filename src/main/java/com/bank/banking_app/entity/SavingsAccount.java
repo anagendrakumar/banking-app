@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -12,19 +13,12 @@ import java.util.List;
 /*
  * Default minimum balance will be 100
  */
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SavingsAccount {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty
-    private Long accountId;
-
-    @JsonProperty
-    private double balance;
-    @JsonProperty
+public class SavingsAccount extends BaseAccount{
     private double minimumBalance = 500.0;
 
     @OneToOne
@@ -34,8 +28,5 @@ public class SavingsAccount {
 
     @OneToMany(mappedBy = "savingsAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Transactions> transactions;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
 }

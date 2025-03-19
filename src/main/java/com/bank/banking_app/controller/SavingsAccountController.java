@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-//@RequestMapping("/api/savingsaccount")
+@RequestMapping("/api/savings-account")
 public class SavingsAccountController {
 
     @Autowired
@@ -26,13 +26,13 @@ public class SavingsAccountController {
   public ResponseEntity<SavingsAccount> getAccountDetails(@PathVariable Long accountId) throws NotFoundException {
       return ResponseEntity.ok().body(savingsAccountService.getAccountById(accountId));
   }
-    @PostMapping("/deposit/{accountId}/{amount}")
-    public ResponseEntity<SavingsAccount> deposit(@PathVariable Long accountId,@PathVariable double amount) throws NotFoundException{
+    @PostMapping("/deposit/{accountId}")
+    public ResponseEntity<SavingsAccount> deposit(@PathVariable Long accountId,@RequestHeader double amount) throws NotFoundException{
       return ResponseEntity.ok(savingsAccountService.deposit(accountId,amount));
     }
 
-    @PostMapping("/withdraw/{accountId}/{amount}")
-    public ResponseEntity<SavingsAccount> withdraw(@PathVariable Long accountId,@PathVariable double amount) throws NotFoundException, InsufficientBalance {
+    @PostMapping("/{accountId}/withdraw")
+    public ResponseEntity<SavingsAccount> withdraw(@PathVariable Long accountId,@RequestHeader double amount) throws NotFoundException, InsufficientBalance {
         return ResponseEntity.ok(savingsAccountService.withdraw(accountId,amount));
     }
 }

@@ -2,10 +2,13 @@ package com.bank.banking_app.service;
 
 import com.bank.banking_app.entity.Customer;
 import com.bank.banking_app.entity.LoanAccount;
+import com.bank.banking_app.entity.SavingsAccount;
 import com.bank.banking_app.entity.Transactions;
+import com.bank.banking_app.exceptions.InsufficientBalance;
 import com.bank.banking_app.exceptions.NotFoundException;
 import com.bank.banking_app.repository.CustomerRepository;
 import com.bank.banking_app.repository.LoanAccountRepository;
+import com.bank.banking_app.repository.SavingsAccountRepository;
 import com.bank.banking_app.repository.TransactionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,9 @@ public class LoanAccountService {
 
     @Autowired
     private TransactionsRepository transactionsRepository;
+
+    @Autowired
+    private SavingsAccountRepository savingsAccountRepository;
 
     public LoanAccount openLoanAccount(Long customerId,LoanAccount loanAccount) throws NotFoundException {
         Customer customer=customerRepository.findById(customerId)
@@ -50,6 +56,7 @@ public class LoanAccountService {
         transactions.setTransactionDate(LocalDateTime.now());
         transactions.setLoanAccount(loanAccount);
         transactions.setTransactionType("EMI Payment");
+        transactions.setTransactionStatus("SUCCESS");
         transactionsRepository.save(transactions);
         return loanAccountRepository.save(loanAccount);
     }
@@ -57,12 +64,19 @@ public class LoanAccountService {
     public LoanAccount makeAdhocPayment(Long loanId, double amount) throws NotFoundException {
         LoanAccount loanAccount = loanAccountRepository.findById(loanId)
                 .orElseThrow(() -> new NotFoundException("Loan account not found"));
+        SavingsAccount savingsAccount=loanAccount.getCustomer().getSavingsAccount();
+        if(savingsAccount.getBalance()<amount)
+            throw new InsufficientBalance("Funds are not sufficient to make payment");
+
+        savingsAccount.setBalance(savingsAccount.getBalance()-amount);
+        savingsAccountRepository.save(savingsAccount);
         loanAccount.setOutstandingBalance(loanAccount.getOutstandingBalance() - amount);
         Transactions transactions=new Transactions();
         transactions.setAmount(amount);
         transactions.setTransactionDate(LocalDateTime.now());
         transactions.setLoanAccount(loanAccount);
         transactions.setTransactionType("ADHOC Payment");
+        transactions.setTransactionStatus("SUCCESS");
         transactionsRepository.save(transactions);
         return loanAccountRepository.save(loanAccount);
     }

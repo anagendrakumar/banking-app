@@ -1,19 +1,19 @@
 package com.bank.banking_app.service;
 
+import com.bank.banking_app.entity.Address;
 import com.bank.banking_app.entity.Customer;
 import com.bank.banking_app.exceptions.CustomerAlreadyExists;
 import com.bank.banking_app.exceptions.NotFoundException;
 import com.bank.banking_app.repository.AddressRepository;
 import com.bank.banking_app.repository.CustomerRepository;
 import com.bank.banking_app.validations.Validations;
-import org.apache.coyote.BadRequestException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 @Service
 public class CustomerService {
@@ -41,8 +41,9 @@ public class CustomerService {
         boolean isAadhaarCheck= Validations.isAadhaarValidation(customer.getAadhaar());
           if(!isAadhaarCheck)
               throw new RuntimeException("Please enter correct Aadhaar details");
+
           boolean isPhoneCheck=Validations.isMobileValidation(customer.getPhone());
-          if(!isPhoneCheck)
+           if(!isPhoneCheck)
               throw new RuntimeException("Please enter correct phone number");
 
         customer.getAddress().stream().forEach(address->address.setCustomer(customer));
@@ -90,5 +91,11 @@ public class CustomerService {
         customerRepository.deleteById(customerId);
     }
 
+    //customer address will get from this service
+    public List<Address> getCustomerAddress(Long customerId) throws NotFoundException {
+        Customer customer=customerRepository.findById(customerId).orElseThrow(()->
+                new NotFoundException("Customer details are not found"));
+        return customer.getAddress();
+    }
 
 }
