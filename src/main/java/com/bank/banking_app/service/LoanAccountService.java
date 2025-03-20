@@ -61,12 +61,9 @@ public class LoanAccountService {
         LoanAccount loanAccount = loanAccountRepository.findById(loanId)
                 .orElseThrow(() -> new RuntimeException("Loan account not found"));
         loanAccount.setOutstandingBalance(loanAccount.getOutstandingBalance() - amount);
-        Transactions transactions=new Transactions();
-        transactions.setAmount(amount);
-        transactions.setTransactionDate(LocalDateTime.now());
+        Transactions transactions=new Transactions(LocalDateTime.now(),
+                "EMI Payment","SUCCESS",amount);
         transactions.setLoanAccount(loanAccount);
-        transactions.setTransactionType("EMI Payment");
-        transactions.setTransactionStatus("SUCCESS");
         transactionsRepository.save(transactions);
         return loanAccountRepository.save(loanAccount);
     }
@@ -75,18 +72,19 @@ public class LoanAccountService {
         LoanAccount loanAccount = loanAccountRepository.findById(loanId)
                 .orElseThrow(() -> new NotFoundException("Loan account not found"));
         SavingsAccount savingsAccount=loanAccount.getCustomer().getSavingsAccount();
-        if(savingsAccount.getBalance()<amount)
+        if(savingsAccount.getBalance()<amount) {
+            Transactions transactions=new Transactions(LocalDateTime.now(),
+                    "ADHOC Payment","FAILED",amount);
+            transactions.setLoanAccount(loanAccount);
+            transactionsRepository.save(transactions);
             throw new InsufficientBalance("Funds are not sufficient to make payment");
-
+        }
         savingsAccount.setBalance(savingsAccount.getBalance()-amount);
         savingsAccountRepository.save(savingsAccount);
         loanAccount.setOutstandingBalance(loanAccount.getOutstandingBalance() - amount);
-        Transactions transactions=new Transactions();
-        transactions.setAmount(amount);
-        transactions.setTransactionDate(LocalDateTime.now());
+        Transactions transactions=new Transactions(LocalDateTime.now(),
+                "ADHOC Payment","SUCCESS",amount);
         transactions.setLoanAccount(loanAccount);
-        transactions.setTransactionType("ADHOC Payment");
-        transactions.setTransactionStatus("SUCCESS");
         transactionsRepository.save(transactions);
         return loanAccountRepository.save(loanAccount);
     }
