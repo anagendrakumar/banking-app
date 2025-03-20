@@ -1,17 +1,14 @@
 package com.bank.banking_app.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 import java.util.List;
 /*
- * Default minimum balance will be 100
+ * Default minimum balance will be 500
  */
 @EqualsAndHashCode(callSuper = true)
 @Entity

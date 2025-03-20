@@ -24,6 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 public class LoanAccount extends BaseAccount{
 
+
     private double loanAmount;
     private int tenure; // In months
     private double interestRate;
@@ -37,5 +38,8 @@ public class LoanAccount extends BaseAccount{
 
     @OneToMany(mappedBy = "loanAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Transactions> transactions;
+
+    @JsonIgnore
+    private double balance;
 
 }

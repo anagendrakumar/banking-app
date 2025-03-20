@@ -10,6 +10,8 @@ import com.bank.banking_app.repository.CustomerRepository;
 import com.bank.banking_app.repository.LoanAccountRepository;
 import com.bank.banking_app.repository.SavingsAccountRepository;
 import com.bank.banking_app.repository.TransactionsRepository;
+import com.bank.banking_app.response.LoanAccountResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,10 @@ public class LoanAccountService {
     @Autowired
     private SavingsAccountRepository savingsAccountRepository;
 
-    public LoanAccount openLoanAccount(Long customerId,LoanAccount loanAccount) throws NotFoundException {
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public LoanAccountResponse openLoanAccount(Long customerId,LoanAccount loanAccount) throws NotFoundException {
         Customer customer=customerRepository.findById(customerId)
                 .orElseThrow(() ->new NotFoundException("Customer Not Found"));
         loanAccount.setCustomer(customer);
@@ -39,7 +44,12 @@ public class LoanAccountService {
         double emi = (loanAccount.getLoanAmount() * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanAccount.getTenure())) /
                 (Math.pow(1 + monthlyInterestRate, loanAccount.getTenure()) - 1);
         loanAccount.setEmiAmount((double) Math.round(emi*100)/100);
-        return loanAccountRepository.save(loanAccount);
+        loanAccount.setOutstandingBalance(loanAccount.getLoanAmount());
+        loanAccount.setCreatedAt(LocalDateTime.now());
+         LoanAccount saved=loanAccountRepository.save(loanAccount);
+        LoanAccountResponse response=new LoanAccountResponse();
+         modelMapper.map(saved,response);
+        return response;
     }
 
     public LoanAccount getLoanAccountById(Long loanId) throws NotFoundException {

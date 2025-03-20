@@ -2,7 +2,6 @@ package com.bank.banking_app.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -34,13 +33,10 @@ public class Transactions {
     private LoanAccount loanAccount;
 
     public Transactions(LocalDateTime transactionDate, String transactionType,
-               String transactionStatus, double amount, SavingsAccount savingsAccount,
-                        LoanAccount loanAccount) {
+               String transactionStatus, double amount) {
         this.transactionDate = transactionDate;
         this.transactionType = transactionType;
         this.transactionStatus = transactionStatus;
         this.amount = amount;
-        this.savingsAccount = savingsAccount;
-        this.loanAccount = loanAccount;
     }
 }

@@ -43,12 +43,9 @@ public class SavingsAccountService {
         SavingsAccount account = savingsAccountRepository.findById(accountId)
                 .orElseThrow(() -> new NotFoundException("Account not found"));
         account.setBalance(account.getBalance() + amount);
-        Transactions transactions=new Transactions();
-         transactions.setAmount(amount);
-         transactions.setTransactionDate(LocalDateTime.now());
+        Transactions transactions=new Transactions(LocalDateTime.now(),
+                "Deposit","SUCCESS",amount);
          transactions.setSavingsAccount(account);
-         transactions.setTransactionType("Deposit");
-         transactions.setTransactionStatus("SUCCESS");
          transactionsRepository.save(transactions);
          account.setUpdatedAt(LocalDateTime.now());
         return savingsAccountRepository.save(account);
@@ -57,16 +54,19 @@ public class SavingsAccountService {
     public SavingsAccount withdraw(Long accountId, double amount) throws NotFoundException,InsufficientBalance {
         SavingsAccount account = savingsAccountRepository.findById(accountId)
                 .orElseThrow(() -> new NotFoundException("Account not found"));
-        if ((account.getBalance() - amount) < account.getMinimumBalance()) {
+        if ((account.getBalance() - amount) < account.getMinimumBalance() || (account.getBalance()<amount) ){
+            Transactions transactions=new Transactions(LocalDateTime.now(),
+                    "Withdraw","FAILED",amount);
+            transactions.setSavingsAccount(account);
+            transactionsRepository.save(transactions);
             throw new InsufficientBalance("Insufficient balance");
         }
+
         account.setBalance(account.getBalance() - amount);
-        Transactions transactions=new Transactions();
-        transactions.setAmount(amount);
-        transactions.setTransactionDate(LocalDateTime.now());
+        Transactions transactions=new Transactions(LocalDateTime.now(),
+                "Withdraw","SUCCESS",amount);
+
         transactions.setSavingsAccount(account);
-        transactions.setTransactionType("Withdraw");
-        transactions.setTransactionStatus("SUCCESS");
         transactionsRepository.save(transactions);
         account.setUpdatedAt(LocalDateTime.now());
         return savingsAccountRepository.save(account);

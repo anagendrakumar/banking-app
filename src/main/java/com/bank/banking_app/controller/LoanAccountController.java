@@ -2,6 +2,7 @@ package com.bank.banking_app.controller;
 
 import com.bank.banking_app.entity.LoanAccount;
 import com.bank.banking_app.exceptions.NotFoundException;
+import com.bank.banking_app.response.LoanAccountResponse;
 import com.bank.banking_app.service.EMICalculatorService;
 import com.bank.banking_app.service.LoanAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class LoanAccountController {
     private EMICalculatorService emiCalculatorService;
 
     @PostMapping("/new-loan/{customerId}")
-    public ResponseEntity<LoanAccount> newLoan(@PathVariable Long customerId, @RequestBody LoanAccount loanAccount) throws NotFoundException {
+    public ResponseEntity<LoanAccountResponse> newLoan(@PathVariable Long customerId, @RequestBody LoanAccount loanAccount) throws NotFoundException {
         return ResponseEntity.ok(loanAccountService.openLoanAccount(customerId,loanAccount));
     }
 
