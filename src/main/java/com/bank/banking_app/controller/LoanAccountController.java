@@ -48,7 +48,7 @@ public class LoanAccountController {
     }
 
     @DeleteMapping("/delete/{loanId}")
-    public ResponseEntity<String> deleteLoan(@PathVariable Long loanId){
+    public ResponseEntity<String> deleteLoan(@PathVariable Long loanId) throws NotFoundException {
         return ResponseEntity.ok(loanAccountService.deleteById(loanId));
     }
 }

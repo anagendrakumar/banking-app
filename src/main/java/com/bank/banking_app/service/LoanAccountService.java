@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+
 
 @Service
 public class LoanAccountService {
@@ -89,8 +89,10 @@ public class LoanAccountService {
         return loanAccountRepository.save(loanAccount);
     }
 
-    public String deleteById(Long loanId) {
-        LoanAccount loanAccount=loanAccountRepository.findById(loanId).get();
+    public String deleteById(Long loanId) throws NotFoundException {
+        LoanAccount loanAccount=loanAccountRepository.findById(loanId).orElseThrow(
+                ()-> new NotFoundException("Loan Account is not found on this id: "+loanId)
+        );
         if(loanAccount.getOutstandingBalance()==0)
          loanAccountRepository.deleteById(loanId);
         else
