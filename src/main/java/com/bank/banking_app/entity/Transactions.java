@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Transactions {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "payment_seq")
@@ -33,4 +32,15 @@ public class Transactions {
     @JoinColumn(name = "loan_account_id")
     @JsonIgnore
     private LoanAccount loanAccount;
+
+    public Transactions(LocalDateTime transactionDate, String transactionType,
+               String transactionStatus, double amount, SavingsAccount savingsAccount,
+                        LoanAccount loanAccount) {
+        this.transactionDate = transactionDate;
+        this.transactionType = transactionType;
+        this.transactionStatus = transactionStatus;
+        this.amount = amount;
+        this.savingsAccount = savingsAccount;
+        this.loanAccount = loanAccount;
+    }
 }

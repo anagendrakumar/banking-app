@@ -29,6 +29,9 @@ public class CustomerService {
 
     public Customer addCustomer(Customer customer) throws CustomerAlreadyExists {
         Optional<Customer> customerAlreadyExists=customerRepository.findByAadhaar(customer.getAadhaar());
+        if(customer.isMinor())
+            throw new RuntimeException("Please fill in the Joint Account");
+
        //if customer already presents means its throws an error
         if(customerAlreadyExists.isPresent())
             throw new CustomerAlreadyExists("Customer already exists on Aadhaar "+customer.getAadhaar()+
@@ -46,14 +49,14 @@ public class CustomerService {
            if(!isPhoneCheck)
               throw new RuntimeException("Please enter correct phone number");
 
-        customer.getAddress().stream().forEach(address->address.setCustomer(customer));
+        customer.getAddress().forEach(address->address.setCustomer(customer));
             return customerRepository.save(customer);
 
     }
 
-    public Customer getCustomer(Long id) throws NotFoundException {
-        return customerRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("No found customer details"));
+    public Customer getCustomer(Long customerId) throws NotFoundException {
+        return customerRepository.findById(customerId)
+                .orElseThrow(()-> new NotFoundException("Customer details are not found on this id: "+customerId));
     }
 
     public List<Customer> getAllCustomers(){
@@ -80,13 +83,13 @@ public class CustomerService {
             updatedCustomer.setLoanAccounts(customer.getLoanAccounts());
         if(updatedCustomer.getSavingsAccount()==null)
             updatedCustomer.setSavingsAccount(customer.getSavingsAccount());
-        updatedCustomer.setId(customerId);
+        updatedCustomer.setCustomerId(customerId);
         return customerRepository.save(updatedCustomer);
     }
 
     public void deleteCustomerById(Long customerId) throws NotFoundException {
         customerRepository.findById(customerId).orElseThrow(
-                ()-> new NotFoundException("Customer is not found")
+                ()-> new NotFoundException("Customer is not found on this id: "+customerId)
         );
         customerRepository.deleteById(customerId);
     }
@@ -94,7 +97,10 @@ public class CustomerService {
     //customer address will get from this service
     public List<Address> getCustomerAddress(Long customerId) throws NotFoundException {
         Customer customer=customerRepository.findById(customerId).orElseThrow(()->
-                new NotFoundException("Customer details are not found"));
+                new NotFoundException("Customer details are not found on this id: "+customerId));
+        if(customer.getAddress()==null)
+            throw new NotFoundException("Customer address is not found");
+
         return customer.getAddress();
     }
 

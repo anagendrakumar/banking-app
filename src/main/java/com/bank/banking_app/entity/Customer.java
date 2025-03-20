@@ -14,8 +14,8 @@ import java.util.List;
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long customerId;
 
     private String name;
     private String email;
@@ -23,7 +23,7 @@ public class Customer {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateOfBirth;
     private String aadhaar;
-    private boolean isMinor;
+    private boolean minor;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Address> address;
