@@ -104,4 +104,22 @@ public class CustomerService {
         return customer.getAddress();
     }
 
+    public Address updateAddressByCustomerId(Long addressId, Address address) throws NotFoundException {
+        Address updateAddress = addressRepository.findById(addressId).orElseThrow(() ->
+                new NotFoundException("Address Not Found details"));
+        Customer customer = updateAddress.getCustomer();
+        if (address.getAddressLine1() != null)
+            updateAddress.setAddressLine1(address.getAddressLine1());
+        if (address.getAddressLine2() != null)
+            updateAddress.setAddressLine2(address.getAddressLine2());
+        if (address.getCity() != null)
+            updateAddress.setCity(address.getCity());
+        if (address.getState() != null)
+            updateAddress.setState(address.getState());
+        if (address.getZipCode() != null)
+            updateAddress.setZipCode(address.getZipCode());
+        updateAddress.setCustomer(customer);
+
+        return updateAddress;
+    }
 }

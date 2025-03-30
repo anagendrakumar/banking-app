@@ -48,4 +48,9 @@ public class CustomerController {
 
         return ResponseEntity.ok(customerService.getCustomerAddress(customerId));
     }
+
+    @PutMapping("/address/{addressId}")
+    public ResponseEntity<Address> updateAddress(@PathVariable Long addressId,@RequestBody Address address) throws NotFoundException {
+        return ResponseEntity.ok(customerService.updateAddressByCustomerId(addressId,address));
+    }
 }
