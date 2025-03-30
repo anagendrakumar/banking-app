@@ -30,7 +30,7 @@ public class CustomerService {
     public Customer addCustomer(Customer customer) throws CustomerAlreadyExists {
         Optional<Customer> customerAlreadyExists=customerRepository.findByAadhaar(customer.getAadhaar());
         if(customer.isMinor())
-            throw new RuntimeException("Please fill in the Joint Account");
+            throw new RuntimeException("Please create Joint Account");
 
        //if customer already presents means its throws an error
         if(customerAlreadyExists.isPresent())

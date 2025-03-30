@@ -42,4 +42,10 @@ public class LoanAccount extends BaseAccount{
     @JsonIgnore
     private double balance;
 
+
+    public LoanAccount(double loanAmount, int tenure, double interestRate) {
+        this.loanAmount = loanAmount;
+        this.tenure = tenure;
+        this.interestRate = interestRate;
+    }
 }

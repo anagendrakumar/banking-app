@@ -14,6 +14,7 @@ import com.bank.banking_app.response.LoanAccountResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
 
@@ -36,9 +37,10 @@ public class LoanAccountService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public LoanAccountResponse openLoanAccount(Long customerId,LoanAccount loanAccount) throws NotFoundException {
+    public LoanAccountResponse openLoanAccount(Long customerId, double loanAmount, double interestRate,int tenure) throws NotFoundException {
         Customer customer=customerRepository.findById(customerId)
                 .orElseThrow(() ->new NotFoundException("Customer Not Found"));
+        LoanAccount loanAccount= new LoanAccount(loanAmount,tenure,interestRate);
         loanAccount.setCustomer(customer);
         double monthlyInterestRate = loanAccount.getInterestRate() / 12 / 100;
         double emi = (loanAccount.getLoanAmount() * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, loanAccount.getTenure())) /
@@ -68,7 +70,7 @@ public class LoanAccountService {
         return loanAccountRepository.save(loanAccount);
     }
 
-    public LoanAccount makeAdhocPayment(Long loanId, double amount) throws NotFoundException {
+    public void makeAdhocPayment(Long loanId, double amount) throws NotFoundException {
         LoanAccount loanAccount = loanAccountRepository.findById(loanId)
                 .orElseThrow(() -> new NotFoundException("Loan account not found"));
         SavingsAccount savingsAccount=loanAccount.getCustomer().getSavingsAccount();
@@ -86,7 +88,7 @@ public class LoanAccountService {
                 "ADHOC Payment","SUCCESS",amount);
         transactions.setLoanAccount(loanAccount);
         transactionsRepository.save(transactions);
-        return loanAccountRepository.save(loanAccount);
+        loanAccountRepository.save(loanAccount);
     }
 
     public String deleteById(Long loanId) throws NotFoundException {

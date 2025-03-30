@@ -35,4 +35,5 @@ public class SavingsAccountController {
     public ResponseEntity<SavingsAccount> withdraw(@PathVariable Long accountId,@RequestHeader double amount) throws NotFoundException, InsufficientBalance {
         return ResponseEntity.ok(savingsAccountService.withdraw(accountId,amount));
     }
+
 }

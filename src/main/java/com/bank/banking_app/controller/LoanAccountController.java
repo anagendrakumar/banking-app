@@ -1,6 +1,7 @@
 package com.bank.banking_app.controller;
 
 import com.bank.banking_app.entity.LoanAccount;
+import com.bank.banking_app.exceptions.InsufficientBalance;
 import com.bank.banking_app.exceptions.NotFoundException;
 import com.bank.banking_app.response.LoanAccountResponse;
 import com.bank.banking_app.service.EMICalculatorService;
@@ -22,8 +23,8 @@ public class LoanAccountController {
     private EMICalculatorService emiCalculatorService;
 
     @PostMapping("/new-loan/{customerId}")
-    public ResponseEntity<LoanAccountResponse> newLoan(@PathVariable Long customerId, @RequestBody LoanAccount loanAccount) throws NotFoundException {
-        return ResponseEntity.ok(loanAccountService.openLoanAccount(customerId,loanAccount));
+    public ResponseEntity<LoanAccountResponse> newLoan(@PathVariable Long customerId, @RequestHeader double loanAmount,@RequestHeader double interestRate,@RequestHeader int tenure) throws NotFoundException {
+        return ResponseEntity.ok(loanAccountService.openLoanAccount(customerId,loanAmount,interestRate,tenure));
     }
 
     @GetMapping("/get-loan/{loanId}")
@@ -38,8 +39,14 @@ public class LoanAccountController {
     }
 
     @PostMapping("/{loanId}/adhoc-payment")
-    public ResponseEntity<LoanAccount> adhocPayment(@PathVariable Long loanId, @RequestHeader double amount) throws NotFoundException {
-        return ResponseEntity.ok().body(loanAccountService.makeAdhocPayment(loanId, amount));
+    public ResponseEntity<String> adhocPayment(@PathVariable Long loanId, @RequestHeader double amount) throws NotFoundException {
+        try{
+            loanAccountService.makeAdhocPayment(loanId, amount);
+            return ResponseEntity.ok().body("Payment Successful");
+        }catch (InsufficientBalance ex){
+            return ResponseEntity.ok("Payment Failed");
+        }
+
     }
     //EMI Calculator
     @GetMapping("/emi-calculate")
